@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kothon"
+version = "0.1.0"
+authors = [{ name = "Klaus Happacher" }]
+description = "Kothon is a Python library designed to bring the elegance and functionality of Kotlin's Sequence class into the Python ecosystem. With an emphasis on functional programming paradigms, Kothon enables Python developers to leverage lazy-evaluated sequences, allowing for efficient and expressive data processing pipelines."
+readme = "README.md"
+license = {text = "MIT"}
