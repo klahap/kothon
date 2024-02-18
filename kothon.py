@@ -23,13 +23,13 @@ class Seq(Generic[T]):
     operations without creating intermediate collections.
     """
 
-    _data: Iterable[T]
+    _iterable: Iterable[T]
 
-    def __init__(self, data: Iterable[T]):
-        self._data = data
+    def __init__(self, iterable: Iterable[T]):
+        self._iterable = iterable
 
     def __iter__(self) -> Iterator[T]:
-        return iter(self._data)
+        return iter(self._iterable)
 
     def filter(self, predicate: Callable[[T], bool]) -> "Seq[T]":
         """
@@ -38,7 +38,7 @@ class Seq(Generic[T]):
         :param predicate: A function that evaluates each element to a boolean.
         :return: A new Seq instance with elements that satisfy the predicate.
         """
-        return Seq(d for d in self._data if predicate(d))
+        return Seq(d for d in self._iterable if predicate(d))
 
     def filter_not_none(self: "Seq[Optional[R]]") -> "Seq[R]":
         """
@@ -46,7 +46,7 @@ class Seq(Generic[T]):
 
         :return: A new Seq instance with all elements that are not None.
         """
-        return Seq(d for d in self._data if d is not None)
+        return Seq(d for d in self._iterable if d is not None)
 
     def filter_is_instance(self, cls: Type[R]) -> "Seq[R]":
         """
@@ -55,7 +55,7 @@ class Seq(Generic[T]):
         :param cls: The class type to filter the elements by.
         :return: A new Seq instance containing only elements of the specified type.
         """
-        return Seq((e for e in self._data if isinstance(e, cls)))
+        return Seq((e for e in self._iterable if isinstance(e, cls)))
 
     def map(self, fn: Callable[[T], R]) -> "Seq[R]":
         """
@@ -65,7 +65,7 @@ class Seq(Generic[T]):
                    type R.
         :return: A new Seq instance with transformed elements.
         """
-        return Seq(fn(d) for d in self._data)
+        return Seq(fn(d) for d in self._iterable)
 
     def map_not_none(self, fn: Callable[[T], Optional[R]]) -> "Seq[R]":
         """
@@ -78,7 +78,7 @@ class Seq(Generic[T]):
         :return: A new Seq instance with transformed elements, excluding any "None"
         results.
         """
-        return Seq(r for d in self._data if (r := fn(d)) is not None)
+        return Seq(r for d in self._iterable if (r := fn(d)) is not None)
 
     def flat_map(self, fn: Callable[[T], Iterable[R]]) -> "Seq[R]":
         """
@@ -90,7 +90,7 @@ class Seq(Generic[T]):
         :return: A new Seq instance containing all the elements from the iterables
         produced by applying the function to each element in the original sequence.
         """
-        return Seq(jj for ii in (fn(d) for d in self._data) for jj in ii)
+        return Seq(jj for ii in (fn(d) for d in self._iterable) for jj in ii)
 
     def flatten(self: "Seq[T: Iterable[R]]") -> "Seq[R]":
         """
@@ -101,7 +101,7 @@ class Seq(Generic[T]):
 
         :return: A new Seq instance containing all the elements of the inner iterables.
         """
-        return Seq(jj for ii in self._data for jj in ii)
+        return Seq(jj for ii in self._iterable for jj in ii)
 
     def associate(self, fn: Callable[[T], tuple[Key, Value]]) -> dict[Key, Value]:
         """
@@ -114,7 +114,7 @@ class Seq(Generic[T]):
         :return: A dictionary containing the key-value pairs resulting from the
         transformation of each element in the sequence.
         """
-        return dict(fn(d) for d in self._data)
+        return dict(fn(d) for d in self._iterable)
 
     def associate_by(self, key_selector: Callable[[T], Key]) -> dict[Key, T]:
         """
@@ -126,7 +126,7 @@ class Seq(Generic[T]):
         :return: A dictionary where each key is the result of applying the key selector
         function to each element, and each value is the element itself.
         """
-        return dict((key_selector(d), d) for d in self._data)
+        return dict((key_selector(d), d) for d in self._iterable)
 
     def associate_with(self, value_selector: Callable[[T], Value]) -> dict[T, Value]:
         """
@@ -138,7 +138,7 @@ class Seq(Generic[T]):
         :return: A dictionary where each key is an element from the sequence, and each
         value is the result of applying the value selector function to that element.
         """
-        return dict((d, value_selector(d)) for d in self._data)
+        return dict((d, value_selector(d)) for d in self._iterable)
 
     def group_by(self, key_selector: Callable[[T], Key]) -> dict[Key, list[T]]:
         """
@@ -153,7 +153,7 @@ class Seq(Generic[T]):
         same key.
         """
         result = {}
-        for d in self._data:
+        for d in self._iterable:
             result.setdefault(key_selector(d), []).append(d)
         return result
 
@@ -163,7 +163,7 @@ class Seq(Generic[T]):
 
         :return: A list containing all elements of the sequence.
         """
-        return list(self._data)
+        return list(self._iterable)
 
     def to_set(self) -> set[T]:
         """
@@ -171,7 +171,7 @@ class Seq(Generic[T]):
 
         :return: A set containing all elements of the sequence.
         """
-        return set(self._data)
+        return set(self._iterable)
 
     def all(self, predicate: Optional[Callable[[T], bool]] = None) -> bool:
         """
@@ -182,8 +182,8 @@ class Seq(Generic[T]):
         :return: True if all elements satisfy the condition, False otherwise.
         """
         if predicate is None:
-            return all(self._data)
-        return all(predicate(d) for d in self._data)
+            return all(self._iterable)
+        return all(predicate(d) for d in self._iterable)
 
     def none(self, predicate: Optional[Callable[[T], bool]] = None) -> bool:
         """
@@ -204,8 +204,8 @@ class Seq(Generic[T]):
         :return: True if at least one element satisfies the condition, False otherwise.
         """
         if predicate is None:
-            return any(self._data)
-        return any(predicate(d) for d in self._data)
+            return any(self._iterable)
+        return any(predicate(d) for d in self._iterable)
 
     def max(self) -> T:
         """
@@ -214,7 +214,7 @@ class Seq(Generic[T]):
         :return: The maximum element.
         :raises ValueError: If the sequence is empty.
         """
-        return max(self._data)
+        return max(self._iterable)
 
     def max_or_none(self) -> Optional[T]:
         """
@@ -223,7 +223,7 @@ class Seq(Generic[T]):
         :return: The maximum element or None if the sequence is empty.
         """
         try:
-            return max(self._data)
+            return max(self._iterable)
         except ValueError:
             return None
 
@@ -235,7 +235,7 @@ class Seq(Generic[T]):
         :return: The element that gives the maximum value from the given function.
         :raises ValueError: If the sequence is empty.
         """
-        return max(self._data, key=selector)
+        return max(self._iterable, key=selector)
 
     def max_by_or_none(self, selector: Callable[[T], R]) -> Optional[T]:
         """
@@ -247,7 +247,7 @@ class Seq(Generic[T]):
         None if the sequence is empty.
         """
         try:
-            return max(self._data, key=selector)
+            return max(self._iterable, key=selector)
         except ValueError:
             return None
 
@@ -258,7 +258,7 @@ class Seq(Generic[T]):
         :return: The minimum element.
         :raises ValueError: If the sequence is empty.
         """
-        return min(self._data)
+        return min(self._iterable)
 
     def min_or_none(self) -> Optional[T]:
         """
@@ -267,7 +267,7 @@ class Seq(Generic[T]):
         :return: The minimum element or None if the sequence is empty.
         """
         try:
-            return min(self._data)
+            return min(self._iterable)
         except ValueError:
             return None
 
@@ -279,7 +279,7 @@ class Seq(Generic[T]):
         :return: The element that gives the smallest value from the given function.
         :raises ValueError: If the sequence is empty.
         """
-        return min(self._data, key=selector)
+        return min(self._iterable, key=selector)
 
     def min_by_or_none(self, selector: Callable[[T], R]) -> Optional[T]:
         """
@@ -291,7 +291,7 @@ class Seq(Generic[T]):
         None if the sequence is empty.
         """
         try:
-            return min(self._data, key=selector)
+            return min(self._iterable, key=selector)
         except ValueError:
             return None
 
@@ -361,10 +361,10 @@ class Seq(Generic[T]):
         :return: The last element of the sequence.
         :raises ValueError: If the sequence is empty.
         """
-        if isinstance(self._data, (list, tuple, str)):
-            if len(self._data) == 0:
+        if isinstance(self._iterable, (list, tuple, str)):
+            if len(self._iterable) == 0:
                 raise ValueError("last() called on an empty sequence")
-            return self._data[-1]
+            return self._iterable[-1]
 
         it = iter(self)
         try:
@@ -382,13 +382,13 @@ class Seq(Generic[T]):
 
         :return: The first element of the sequence or None if the sequence is empty.
         """
-        if isinstance(self._data, (list, tuple, str)):
-            if len(self._data) == 0:
+        if isinstance(self._iterable, (list, tuple, str)):
+            if len(self._iterable) == 0:
                 return None
-            return self._data[-1]
+            return self._iterable[-1]
 
         last = None
-        for x in self._data:
+        for x in self._iterable:
             last = x
         return last
 
@@ -399,7 +399,7 @@ class Seq(Generic[T]):
         :param n: The number of elements to skip.
         :return: A new Seq instance with the first n elements dropped.
         """
-        return Seq(x for i, x in enumerate(self._data) if i >= n)
+        return Seq(x for i, x in enumerate(self._iterable) if i >= n)
 
     def drop_while(self, predicate: Callable[[T], bool]) -> "Seq[T]":
         """
@@ -428,7 +428,7 @@ class Seq(Generic[T]):
         :param n: The number of elements to take.
         :return: A new Seq instance with at most n elements.
         """
-        return Seq(item for i, item in enumerate(self._data) if i < n)
+        return Seq(item for i, item in enumerate(self._iterable) if i < n)
 
     def take_while(self, predicate: Callable[[T], bool]) -> "Seq[T]":
         """
@@ -440,7 +440,7 @@ class Seq(Generic[T]):
         """
 
         def generator():
-            for element in self._data:
+            for element in self._iterable:
                 if predicate(element):
                     yield element
                 else:
@@ -454,7 +454,7 @@ class Seq(Generic[T]):
 
         :return: A new Seq instance with sorted elements.
         """
-        return Seq(sorted(self._data))
+        return Seq(sorted(self._iterable))
 
     def sorted_by(self, key_func: Callable[[T], R]) -> "Seq[T]":
         """
@@ -463,7 +463,7 @@ class Seq(Generic[T]):
         :param key_func: A function that extracts a comparison key from each element.
         :return: A new Seq instance with elements sorted by the key function.
         """
-        return Seq(sorted(self._data, key=key_func))
+        return Seq(sorted(self._iterable, key=key_func))
 
     def sorted_desc(self) -> "Seq[T]":
         """
@@ -471,7 +471,7 @@ class Seq(Generic[T]):
 
         :return: A new Seq instance with elements sorted in descending order.
         """
-        return Seq(sorted(self._data, reverse=True))
+        return Seq(sorted(self._iterable, reverse=True))
 
     def sorted_by_desc(self, key_func: Callable[[T], R]) -> "Seq[T]":
         """
@@ -482,7 +482,7 @@ class Seq(Generic[T]):
         :return: A new Seq instance with elements sorted by the key function in
         descending order.
         """
-        return Seq(sorted(self._data, key=key_func, reverse=True))
+        return Seq(sorted(self._iterable, key=key_func, reverse=True))
 
     def chunked(self, size: int) -> "Seq[list[T]]":
         """
@@ -509,7 +509,7 @@ class Seq(Generic[T]):
 
         :return: A new Seq instance where each element is a tuple (index, element).
         """
-        return Seq(enumerate(self._data))
+        return Seq(enumerate(self._iterable))
 
     def shuffled(self, rng: Optional[random.Random] = None) -> "Seq":
         """
@@ -520,7 +520,7 @@ class Seq(Generic[T]):
         deterministic.
         :return: A new Seq instance with randomly ordered elements.
         """
-        elements = list(self._data)  # Convert to list to shuffle
+        elements = list(self._iterable)  # Convert to list to shuffle
         if rng is None:
             random.shuffle(elements)
         else:
@@ -609,7 +609,7 @@ class Seq(Generic[T]):
             seen.add(key)
             return True
 
-        return Seq(x for x in self._data if check_key(x))
+        return Seq(x for x in self._iterable if check_key(x))
 
     def distinct_by(self, key_selector: Callable[[T], R]) -> "Seq[T]":
         """
@@ -627,7 +627,7 @@ class Seq(Generic[T]):
             seen.add(key)
             return True
 
-        return Seq(e for e in self._data if check_key(key_selector(e)))
+        return Seq(e for e in self._iterable if check_key(key_selector(e)))
 
     def for_each(self, action: Callable[[T], None]) -> None:
         """
@@ -635,7 +635,7 @@ class Seq(Generic[T]):
 
         :param action: A function that takes an element and performs an action.
         """
-        for element in self._data:
+        for element in self._iterable:
             action(element)
 
     def join_to_string(
@@ -653,7 +653,7 @@ class Seq(Generic[T]):
         :param suffix: The suffix string to add at the end.
         :return: A string representation of the sequence elements.
         """
-        return prefix + separator.join(str(e) for e in self._data) + suffix
+        return prefix + separator.join(str(e) for e in self._iterable) + suffix
 
     def partition(self, predicate: Callable[[T], bool]) -> tuple["Seq[T]", "Seq[T]"]:
         """
@@ -665,7 +665,7 @@ class Seq(Generic[T]):
         predicate is False.
         """
         true_seq, false_seq = [], []
-        for element in self._data:
+        for element in self._iterable:
             if predicate(element):
                 true_seq.append(element)
             else:

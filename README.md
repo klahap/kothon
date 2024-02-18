@@ -51,7 +51,29 @@ result = seq \
 print(result)  # Output: [0, 4, 8, 12, 16]
 ```
 
-## Usage
+## Custom Functions
+
+You can easily extend the `Seq` class to include custom functionality tailored to your specific needs. This is achieved by subclassing `Seq` and adding your own methods to the new subclass.
+
+```python
+>>> import kothon
+>>> from typing import TypeVar, Generic
+>>> T = TypeVar("T")
+>>>
+>>> class Seq(kothon.Seq[T], Generic[T]):
+...    def element_at(self, index: int) -> T:
+...        """Retrieves an element at the specified index from the sequence."""
+...        try:
+...            return self.drop(index).first()
+...        except ValueError:
+...            raise IndexError("Index out of bounds")
+>>>
+>>> Seq(['a', 'b', 'c', 'd']).element_at(2)
+'c'
+>>>
+```
+
+## Existing functions in `Seq`
 
 ### filter
 
