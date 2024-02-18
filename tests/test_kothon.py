@@ -1,3 +1,4 @@
+import random
 import pytest
 
 from kothon import Seq
@@ -253,10 +254,16 @@ def test_enumerated():
 
 
 def test_shuffled():
-    seq = Seq([1, 2, 3, 4, 5])
+    seq = Seq(range(128))
     shuffled_seq = seq.shuffled().to_list()
-    assert set(shuffled_seq) == {1, 2, 3, 4, 5}
-    assert len(shuffled_seq) == 5
+    assert shuffled_seq != list(range(128))
+    assert set(shuffled_seq) == set(range(128))
+    assert len(shuffled_seq) == 128
+
+    seq = Seq([1, 2, 3, 4, 5])
+    rng = random.Random(42)
+    shuffled_seq = seq.shuffled(rng).to_list()
+    assert shuffled_seq == [4, 2, 3, 5, 1]
 
 
 def test_reduce():
@@ -274,6 +281,14 @@ def test_reduce_or_none():
 def test_sum():
     seq = Seq([1, 2, 3, 4])
     assert seq.sum() == 10
+    with pytest.raises(TypeError):
+        Seq([]).sum()
+
+
+def test_sum_or_none():
+    seq = Seq([1, 2, 3, 4])
+    assert seq.sum_or_none() == 10
+    assert Seq([]).sum_or_none() is None
 
 
 def test_distinct():

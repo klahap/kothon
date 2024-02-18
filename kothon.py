@@ -21,21 +21,6 @@ class Seq(Generic[T]):
     evaluation, inspired by Kotlin's Sequence type. The Seq class is designed to
     facilitate lazy evaluation of sequences, allowing for efficient chaining of
     operations without creating intermediate collections.
-
-    Methods:
-        map(func): Applies a function to each element in the sequence.
-        filter(predicate): Filters elements based on a predicate.
-        reduce(operation): Reduces the sequence to a single value.
-        sum(): Sums the elements in the sequence.
-        distinct(): Returns a sequence with distinct elements.
-        sorted(): Returns a sorted sequence.
-        toList(): Converts the sequence to a list.
-        forEach(action): Applies an action to each element of the sequence.
-        ...and more.
-
-    Example usage:
-        seq = Seq([1, 2, 3, 4])
-        result = seq.map(lambda x: x * 2).filter(lambda x: x > 4).toList()
     """
 
     _data: Iterable[T]
@@ -62,6 +47,15 @@ class Seq(Generic[T]):
         :return: A new Seq instance with all elements that are not None.
         """
         return Seq(d for d in self._data if d is not None)
+
+    def filter_is_instance(self, cls: Type[R]) -> "Seq[R]":
+        """
+        Filters elements of the sequence based on their type.
+
+        :param cls: The class type to filter the elements by.
+        :return: A new Seq instance containing only elements of the specified type.
+        """
+        return Seq((e for e in self._data if isinstance(e, cls)))
 
     def map(self, fn: Callable[[T], R]) -> "Seq[R]":
         """
@@ -517,14 +511,20 @@ class Seq(Generic[T]):
         """
         return Seq(enumerate(self._data))
 
-    def shuffled(self) -> "Seq":
+    def shuffled(self, rng: Optional[random.Random] = None) -> "Seq":
         """
         Returns a new Seq with elements shuffled in random order.
 
+        :param rng: An optional instance of random.Random for deterministic shuffling.
+        If not provided, the default random generator is used, which is not
+        deterministic.
         :return: A new Seq instance with randomly ordered elements.
         """
         elements = list(self._data)  # Convert to list to shuffle
-        random.shuffle(elements)
+        if rng is None:
+            random.shuffle(elements)
+        else:
+            rng.shuffle(elements)
         return Seq(elements)
 
     def reduce(self, operation: Callable[[T, T], T]) -> T:
@@ -571,8 +571,29 @@ class Seq(Generic[T]):
         Returns the sum of all elements in the sequence.
 
         :return: The sum of the sequence elements.
+        :raises TypeError: If the sequence is empty or contains non-numeric elements.
         """
-        return sum(self._data)
+        it = iter(self)
+        try:
+            first = next(it)
+        except StopIteration:
+            # pylint: disable=raise-missing-from
+            raise TypeError("sum() called on an empty sequence")
+        return sum(it, start=first)
+
+    def sum_or_none(self) -> Optional[T]:
+        """
+        Calculates the sum of all elements in the sequence, or returns None if the
+        sequence is empty.
+
+        :return: The sum of the sequence elements, or None if the sequence is empty.
+        """
+        it = iter(self)
+        try:
+            first = next(it)
+        except StopIteration:
+            return None
+        return sum(it, start=first)
 
     def distinct(self) -> "Seq[T]":
         """
@@ -616,15 +637,6 @@ class Seq(Generic[T]):
         """
         for element in self._data:
             action(element)
-
-    def filter_is_instance(self, cls: Type[R]) -> "Seq[R]":
-        """
-        Filters elements of the sequence based on their type.
-
-        :param cls: The class type to filter the elements by.
-        :return: A new Seq instance containing only elements of the specified type.
-        """
-        return Seq((e for e in self._data if isinstance(e, cls)))
 
     def join_to_string(
         self,
