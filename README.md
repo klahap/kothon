@@ -1,5 +1,13 @@
 # Kothon
 
+![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FKlausH09%2Fkothon%2Fmain%2Fpyproject.toml)
+![GitHub License](https://img.shields.io/github/license/KlausH09/kothon)
+![PyPI - Status](https://img.shields.io/pypi/status/kothon)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/KlausH09/kothon/tests.yml)
+![Static Badge](https://img.shields.io/badge/coverage-100%25-success)
+
+[//]: # (Using a static badge for 100% code coverage is justified because your test pipeline ensures coverage never falls below 100%, making dynamic updates unnecessary.)
+
 Kothon is a Python library designed to bring the elegance and functionality of Kotlin's Sequence class into the Python
 ecosystem. With an emphasis on functional programming paradigms, Kothon enables Python developers to leverage
 lazy-evaluated sequences, allowing for efficient and expressive data processing pipelines.
