@@ -733,9 +733,9 @@ Splits the sequence into two sequences based on a predicate. The first sequence 
 >>>
 >>> seq = Seq([1, 2, 3, 4, 5])
 >>> true_part, false_part = seq.partition(lambda x: x % 2 == 0)
->>> true_part.to_list()
+>>> true_part
 [2, 4]
->>> false_part.to_list()
+>>> false_part
 [1, 3, 5]
 >>>
 ```
