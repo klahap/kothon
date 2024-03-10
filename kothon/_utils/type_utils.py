@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TypeVar, Protocol, Iterator, Any
-
-T_co = TypeVar("T_co", covariant=True)
+from typing import TypeVar, Protocol
 
 
 class Comparable(Protocol):  # pylint: disable=too-few-public-methods
@@ -24,14 +22,5 @@ class Addable(Protocol):  # pylint: disable=too-few-public-methods
         """abstract add functions"""
 
 
-class Iterable(Protocol[T_co]):  # pylint: disable=too-few-public-methods
-    """Protocol for annotating iterable types."""
-
-    @abstractmethod
-    def __iter__(self: Iterable[T_co]) -> Iterator[T_co]:
-        """abstract iter functions"""
-
-
 CT = TypeVar("CT", bound=Comparable)
 AT = TypeVar("AT", bound=Addable)
-IT_contra = TypeVar("IT_contra", bound=Iterable[Any], contravariant=True)

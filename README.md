@@ -39,41 +39,88 @@ Here's a quick example to get you started with Kothon:
 ```python
 from kothon import Seq
 
-# Create a Kothon sequence
-seq = Seq(range(10))
+input_data = [0, 1, None, 2, 3, None, 4]
 
 # Apply some functional operations
-result = seq \
+result = Seq(input_data) \
+    .filter_not_none() \
     .filter(lambda x: x % 2 == 0) \
     .map(lambda x: x * 2) \
     .to_list()
 
-print(result)  # Output: [0, 4, 8, 12, 16]
+print(result)  # Output: [0, 4, 8]
 ```
 
-## Custom Functions
-
-You can easily extend the `Seq` class to include custom functionality tailored to your specific needs. This is achieved by subclassing `Seq` and adding your own methods to the new subclass.
+Alternatively, utilize `pipe` for a more Pythonic approach.
 
 ```python
->>> import kothon
->>> from typing import TypeVar, Generic
->>> T = TypeVar("T")
->>>
->>> class Seq(kothon.Seq[T], Generic[T]):
-...    def element_at(self, index: int) -> T:
-...        """Retrieves an element at the specified index from the sequence."""
-...        try:
-...            return self.drop(index).first()
-...        except ValueError:
-...            raise IndexError("Index out of bounds")
->>>
->>> Seq(['a', 'b', 'c', 'd']).element_at(2)
-'c'
->>>
+from kothon import pipe, filter_not_none, kothon_filter, kothon_map
+
+input_data = [0, 1, None, 2, 3, None, 4]
+
+# Apply some functional operations
+result = pipe(
+    input_data,
+    filter_not_none,
+    kothon_filter(lambda x: x % 2 == 0),
+    kothon_map(lambda x: x * 2),
+).to_list()
+
+print(result)  # Output: [0, 4, 8]
 ```
 
 ## Existing functions in `Seq`
+
+- [filter](#filter)
+- [filter_not_none](#filter_not_none)
+- [filter_is_instance](#filter_is_instance)
+- [map](#map)
+- [map_not_none](#map_not_none)
+- [flat_map](#flat_map)
+- [flatten](#flatten)
+- [associate](#associate)
+- [associate_by](#associate_by)
+- [associate_with](#associate_with)
+- [group_by](#group_by)
+- [to_list](#to_list)
+- [to_set](#to_set)
+- [all](#all)
+- [none](#none)
+- [any](#any)
+- [max](#max)
+- [max_or_none](#max_or_none)
+- [max_by](#max_by)
+- [max_by_or_none](#max_by_or_none)
+- [min](#min)
+- [min_or_none](#min_or_none)
+- [min_by](#min_by)
+- [min_by_or_none](#min_by_or_none)
+- [single](#single)
+- [single_or_none](#single_or_none)
+- [first](#first)
+- [first_or_none](#first_or_none)
+- [last](#last)
+- [last_or_none](#last_or_none)
+- [drop](#drop)
+- [drop_while](#drop_while)
+- [take](#take)
+- [take_while](#take_while)
+- [sorted](#sorted)
+- [sorted_by](#sorted_by)
+- [sorted_desc](#sorted_desc)
+- [sorted_by_desc](#sorted_by_desc)
+- [chunked](#chunked)
+- [enumerate](#enumerate)
+- [shuffled](#shuffled)
+- [reduce](#reduce)
+- [reduce_or_none](#reduce_or_none)
+- [sum](#sum)
+- [sum_or_none](#sum_or_none)
+- [distinct](#distinct)
+- [distinct_by](#distinct_by)
+- [for_each](#for_each)
+- [join_to_string](#join_to_string)
+- [partition](#partition)
 
 ### filter
 

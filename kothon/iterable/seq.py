@@ -11,7 +11,7 @@ import random
 from itertools import islice
 from typing import Generic, Iterator, TypeVar, Iterable, Callable, Optional, Type
 
-from .._utils.type_utils import CT, AT, IT_contra
+from .._utils.type_utils import CT, AT
 
 T = TypeVar("T")
 R = TypeVar("R")
@@ -42,7 +42,7 @@ class Seq(Generic[T]):
         :param predicate: A function that evaluates each element to a boolean.
         :return: A new Seq instance with elements that satisfy the predicate.
         """
-        return Seq(d for d in self if predicate(d))
+        return Seq(filter(predicate, self))
 
     def filter_not_none(self: "Seq[Optional[R]]") -> "Seq[R]":
         """
@@ -66,10 +66,10 @@ class Seq(Generic[T]):
         Transforms each element in the sequence using a given function.
 
         :param fn: A function that takes an element of type T and returns an element of
-                   type R.
+        type R.
         :return: A new Seq instance with transformed elements.
         """
-        return Seq(fn(d) for d in self)
+        return Seq(map(fn, self))
 
     def map_not_none(self, fn: Callable[[T], Optional[R]]) -> "Seq[R]":
         """
@@ -96,7 +96,7 @@ class Seq(Generic[T]):
         """
         return Seq(jj for ii in (fn(d) for d in self) for jj in ii)
 
-    def flatten(self: "Seq[IT_contra]") -> "Seq[R]":
+    def flatten(self: "Seq[Iterable[R]]") -> "Seq[R]":
         """
         Flattens a sequence of iterables into a single sequence.
 
@@ -255,7 +255,7 @@ class Seq(Generic[T]):
         :return: The element that gives the maximum value from the given function or
         None if the sequence is empty.
         """
-        result: tuple[CT, T] | None = Seq(
+        result: Optional[tuple[CT, T]] = Seq(
             (selector(v), v) for v in self
         ).reduce_or_none(lambda x, y: x if x[0] > y[0] else y)
         if result is not None:
@@ -298,7 +298,7 @@ class Seq(Generic[T]):
         :return: The element that gives the smallest value from the given function or
         None if the sequence is empty.
         """
-        result: tuple[CT, T] | None = Seq(
+        result: Optional[tuple[CT, T]] = Seq(
             (selector(v), v) for v in self
         ).reduce_or_none(lambda x, y: x if x[0] < y[0] else y)
         if result is not None:
@@ -428,8 +428,7 @@ class Seq(Generic[T]):
                 if not predicate(element):
                     yield element
                     break
-            for element in iterator:
-                yield element
+            yield from iterator
 
         return Seq(generator())
 

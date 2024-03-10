@@ -1,7 +1,11 @@
 """kothon"""
 
+from .pipe import pipe  # noqa: F401
 from .iterable import Seq  # noqa: F401
 from .functions import (  # noqa: F401
+    to_list,
+    to_set,
+    to_frozenset,
     associate,
     associate_by,
     associate_with,
@@ -24,9 +28,11 @@ from .functions import (  # noqa: F401
     reduce_or_none,
     sum_or_none,
     join_to_string,
+    kothon_filter,
     filter_not_none,
     filter_is_instance,
     map_not_none,
+    kothon_map,
     flat_map,
     flatten,
     drop,
@@ -37,7 +43,6 @@ from .functions import (  # noqa: F401
     sorted_desc,
     sorted_by_desc,
     chunked,
-    shuffled,
     distinct,
     distinct_by,
     partition,

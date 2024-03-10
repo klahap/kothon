@@ -1,6 +1,9 @@
 """kothon functions"""
 
 from .aggregation import (  # noqa: F401
+    to_list,
+    to_set,
+    to_frozenset,
     associate,
     associate_by,
     associate_with,
@@ -25,9 +28,11 @@ from .aggregation import (  # noqa: F401
     join_to_string,
 )
 from .sequence import (  # noqa: F401
+    kothon_filter,
     filter_not_none,
     filter_is_instance,
     map_not_none,
+    kothon_map,
     flat_map,
     flatten,
     drop,
@@ -38,7 +43,6 @@ from .sequence import (  # noqa: F401
     sorted_desc,
     sorted_by_desc,
     chunked,
-    shuffled,
     distinct,
     distinct_by,
     partition,

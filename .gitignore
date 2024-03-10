@@ -1,8 +1,11 @@
 .idea
 .tox/
 .venv/
+dist/
 
 __pycache__/
 *.egg-info
 
 kothon/stubs/
+
+.DS_Store
