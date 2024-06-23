@@ -1,9 +1,9 @@
 # Kothon
 
-![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FKlausH09%2Fkothon%2Fmain%2Fpyproject.toml)
-![GitHub License](https://img.shields.io/github/license/KlausH09/kothon)
+![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fklahap%2Fkothon%2Fmain%2Fpyproject.toml)
+![GitHub License](https://img.shields.io/github/license/klahap/kothon)
 ![PyPI - Status](https://img.shields.io/pypi/status/kothon)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/KlausH09/kothon/tests.yml)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/klahap/kothon/tests.yml)
 ![Static Badge](https://img.shields.io/badge/coverage-100%25-success)
 
 [//]: # (Using a static badge for 100% code coverage is justified because your test pipeline ensures coverage never falls below 100%, making dynamic updates unnecessary.)

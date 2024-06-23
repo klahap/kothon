@@ -32,10 +32,10 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/KlausH09/kothon"
-Documentation = "https://github.com/KlausH09/kothon/blob/main/README.md"
-Repository = "https://github.com/KlausH09/kothon.git"
-Issues = "https://github.com/KlausH09/kothon/issues"
-# Changelog = "https://github.com/KlausH09/kothon/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/klahap/kothon"
+Documentation = "https://github.com/klahap/kothon/blob/main/README.md"
+Repository = "https://github.com/klahap/kothon.git"
+Issues = "https://github.com/klahap/kothon/issues"
+# Changelog = "https://github.com/klahap/kothon/blob/main/CHANGELOG.md"
 
 [tool.setuptools_scm]
